@@ -60,11 +60,9 @@ $mobilData = [
 
 $mobil = $_POST['mobil'] ?? "Toyota Avanza";
 $harga = $_POST['harga'] ?? ($mobilData[$mobil] ?? 220000000);
-$dpPersen = $_POST['dp'] ?? 10;
-$tenorTahun = $_POST['tenor'] ?? 1;
+$dpPersen = $_POST['dp'] ?? '';
+$tenorTahun = $_POST['tenor'] ?? '';
 
-// Nilai hasil diinisialisasi terlebih dahulu agar tidak muncul
-// peringatan "Possible undefined variable" di VS Code.
 $bulan = 0;
 $bunga = 0;
 $dp = 0;
@@ -108,17 +106,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hitung'])) {
         </label>
 
         <label class="block text-sm font-medium mt-4">DP
-          <select name="dp" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
-            <?php foreach ([10,20,30,40,50,60] as $dp): ?>
-              <option value="<?= $dp ?>" <?= (int)$dpPersen === $dp ? 'selected' : '' ?>><?= $dp ?>%</option>
+          <select name="dp" required class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
+            <option value="" disabled <?= $dpPersen === '' ? 'selected' : '' ?>>-- Pilih DP --</option>
+            <?php foreach ([10,20,30,40,50,60] as $dpOpt): ?>
+              <option value="<?= $dpOpt ?>" <?= (string)$dpPersen === (string)$dpOpt ? 'selected' : '' ?>><?= $dpOpt ?>%</option>
             <?php endforeach; ?>
           </select>
         </label>
 
         <label class="block text-sm font-medium mt-4">Tenor
-          <select name="tenor" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
+          <select name="tenor" required class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
+            <option value="" disabled <?= $tenorTahun === '' ? 'selected' : '' ?>>-- Pilih Tenor --</option>
             <?php for ($tahun = 1; $tahun <= 5; $tahun++): ?>
-              <option value="<?= $tahun ?>" <?= (int)$tenorTahun === $tahun ? 'selected' : '' ?>><?= $tahun ?> Tahun</option>
+              <option value="<?= $tahun ?>" <?= (string)$tenorTahun === (string)$tahun ? 'selected' : '' ?>><?= $tahun ?> Tahun</option>
             <?php endfor; ?>
           </select>
         </label>
