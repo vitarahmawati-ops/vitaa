@@ -149,6 +149,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hitung'])) {
             <span>Jumlah Angsuran / Bulan</span><span>Rp <?= number_format($angsuran, 0, ',', '.') ?></span>
           </div>
         </div>
+
+        <a href="<?= htmlspecialchars(strtok($_SERVER['REQUEST_URI'], '?')) ?>?reset=1"
+           onclick="window.location.href=window.location.pathname+'?reset=1'; return false;"
+           class="block text-center w-full mt-3 border border-gold text-gold hover:bg-gold hover:text-white font-semibold py-2.5 rounded-lg transition-colors duration-300">
+          Reset Simulasi
+        </a>
       <?php endif; ?>
     </div>
   </div>
