@@ -32,7 +32,7 @@
 </header>
 
 <section id="beranda" class="relative min-h-screen flex flex-col items-center justify-center text-center text-white px-5" style="background:linear-gradient(120deg, rgba(30,27,22,.75), rgba(201,162,39,.55)), url('image/her.jpg') center/cover no-repeat;">
-  <h1 class="font-serif text-4xl mb-3">Your Next Ride Starts Here</h1>
+  <h1 class="font-serif text-4xl mb-3">Mobil Impian Anda Dimulai dari Sini</h1>
   <p class="text-goldlight mb-6">Kredit mudah, bunga bersahabat, proses cepat</p>
   <a href="#simulasi" class="bg-gold hover:opacity-90 text-white font-semibold text-sm px-7 py-3 rounded-full">Hitung Simulasi Kredit</a>
 </section>
