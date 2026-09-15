@@ -5,24 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Auto Prima Mobil</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
   tailwind.config = {
     theme: { extend: {
       colors:{ gold:'#C9A227', goldlight:'#F4E4B0', dark:'#1E1B16' },
-      fontFamily:{ serif:['"Playfair Display"','serif'], sans:['Poppins','sans-serif'] }
-    }}
+      fontFamily:{
+        serif:['Georgia', '"Times New Roman"', 'serif'],
+        sans:['-apple-system', 'Segoe UI', 'Roboto', 'sans-serif']
+      }
+    }} 
   }
-</script>
-</head>
+</script> 
+</head>       
 <body class="font-sans text-dark">
-
-<header class="flex justify-between items-center px-10 py-4 border-b-2 border-goldlight sticky top-0 bg-white z-20">
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-10 py-4 border-b-2 border-goldlight bg-white">
   <div class="flex items-center gap-3">
-    <!-- LOGO: ganti src di bawah dengan foto logo kamu, contoh: image/logo.png -->
-    <img src="image/logo.png" alt="Logo Auto Prima Mobil"
-         class="w-11 h-11 rounded-full object-cover bg-gray-200"
-         onerror="this.src='https://placehold.co/44x44?text=Logo'">
+    <img src="image/lg.png" alt="Auto Prima Mobil" class="w-11 h-11 rounded-full object-cover border border-gold" />
     <span class="font-serif font-bold text-lg">Auto Prima Mobil</span>
   </div>
   <nav class="space-x-6 text-sm hidden sm:block">
@@ -33,14 +31,10 @@
   </nav>
 </header>
 
-<!-- HERO: diperbesar full layar (min-h-screen) + slot foto latar.
-     Ganti url('image/hero.jpg') di bawah dengan foto kamu sendiri. -->
-<section id="beranda"
-  class="relative min-h-screen flex flex-col items-center justify-center text-center text-white px-5"
-  style="background:linear-gradient(120deg, rgba(30,27,22,.75), rgba(201,162,39,.55)), url('image/hero.jpg') center/cover no-repeat;">
-  <h1 class="font-serif text-4xl sm:text-5xl mb-4">Wujudkan Mobil Impian Anda</h1>
-  <p class="text-goldlight mb-8 text-lg">Kredit mudah, bunga bersahabat, proses cepat</p>
-  <a href="#simulasi" class="bg-gold hover:opacity-90 text-white font-semibold px-8 py-3.5 rounded-full">Hitung Simulasi Kredit</a>
+<section id="beranda" class="relative min-h-screen flex flex-col items-center justify-center text-center text-white px-5" style="background:linear-gradient(120deg, rgba(30,27,22,.75), rgba(201,162,39,.55)), url('image/her.jpg') center/cover no-repeat;">
+  <h1 class="font-serif text-4xl mb-3">Mobil Impian Anda Dimulai dari Sini</h1>
+  <p class="text-goldlight mb-6">Kredit mudah, bunga bersahabat, proses cepat</p>
+  <a href="#simulasi" class="bg-gold hover:opacity-90 text-white font-semibold text-sm px-7 py-3 rounded-full">Hitung Simulasi Kredit</a>
 </section>
 
 <section id="tentang" class="max-w-4xl mx-auto my-16 px-5 flex flex-wrap items-center gap-8">
@@ -55,6 +49,42 @@
 </section>
 
 <section id="simulasi" class="max-w-2xl mx-auto my-16 px-5">
+<?php
+$mobilData = [
+    "Toyota Avanza" => 220000000,
+    "Honda Brio" => 170000000,
+    "Daihatsu Xenia" => 215000000,
+    "Mitsubishi Xpander" => 270000000,
+    "Suzuki Ertiga" => 230000000
+];
+
+$mobil = $_POST['mobil'] ?? "Toyota Avanza";
+$harga = $_POST['harga'] ?? ($mobilData[$mobil] ?? 220000000);
+$dpPersen = $_POST['dp'] ?? 10;
+$tenorTahun = $_POST['tenor'] ?? 1;
+
+// Nilai hasil diinisialisasi terlebih dahulu agar tidak muncul
+// peringatan "Possible undefined variable" di VS Code.
+$bulan = 0;
+$bunga = 0;
+$dp = 0;
+$angsuran = 0;
+$hasilTampil = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hitung'])) {
+    $harga = (float)$harga;
+    $dpPersen = (float)$dpPersen;
+    $tenorTahun = (int)$tenorTahun;
+
+    if ($harga > 0 && $tenorTahun > 0) {
+        $bulan = $tenorTahun * 12;
+        $bunga = $harga * 0.20;
+        $dp = $harga * $dpPersen / 100;
+        $angsuran = (($harga + $bunga) - $dp) / $bulan;
+        $hasilTampil = true;
+    }
+}
+?>
   <div class="border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
     <div class="bg-dark text-white px-6 py-4 flex justify-between items-center">
       <h3 class="font-serif text-xl">Simulasi Kredit Mobil</h3>
@@ -62,107 +92,67 @@
     </div>
 
     <div class="p-6">
-      <label class="block text-sm font-medium">Pilih Merek / Tipe Mobil
-        <!-- value tiap option = harga referensi, otomatis mengisi kolom Harga Mobil -->
-        <select id="mobil" onchange="isiHarga()" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
-          <option value="235000000">Toyota Avanza</option>
-          <option value="180000000">Honda Brio</option>
-          <option value="225000000">Daihatsu Xenia</option>
-          <option value="260000000">Mitsubishi Xpander</option>
-          <option value="240000000">Suzuki Ertiga</option>
-        </select>
-      </label>
+      <form method="POST" action="#simulasi">
+        <label class="block text-sm font-medium">Pilih Merek / Tipe Mobil
+          <select name="mobil" onchange="this.form.harga.value=this.options[this.selectedIndex].dataset.harga" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
+            <?php foreach ($mobilData as $nama => $nilai): ?>
+              <option value="<?= htmlspecialchars($nama) ?>" data-harga="<?= $nilai ?>" <?= $mobil === $nama ? 'selected' : '' ?>>
+                <?= htmlspecialchars($nama) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </label>
 
-      <label class="block text-sm font-medium mt-4">Harga Mobil (Rp)
-        <input type="number" id="harga" placeholder="Contoh: 150000000" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
-        <span class="text-xs text-gray-400">*Otomatis terisi saat pilih merek, tapi tetap bisa diubah manual</span>
-      </label>
+        <label class="block text-sm font-medium mt-4">Harga Mobil (Rp)
+          <input type="number" name="harga" value="<?= htmlspecialchars($harga) ?>" placeholder="Contoh: 150000000" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
+        </label>
 
-      <label class="block text-sm font-medium mt-4">DP
-        <select id="dp" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
-          <option value="10">10%</option><option value="20">20%</option><option value="30">30%</option>
-          <option value="40">40%</option><option value="50">50%</option><option value="60">60%</option>
-        </select>
-      </label>
+        <label class="block text-sm font-medium mt-4">DP
+          <select name="dp" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
+            <?php foreach ([10,20,30,40,50,60] as $dp): ?>
+              <option value="<?= $dp ?>" <?= (int)$dpPersen === $dp ? 'selected' : '' ?>><?= $dp ?>%</option>
+            <?php endforeach; ?>
+          </select>
+        </label>
 
-      <label class="block text-sm font-medium mt-4">Tenor
-        <select id="tenor" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
-          <option value="1">1 Tahun</option><option value="2">2 Tahun</option><option value="3">3 Tahun</option>
-          <option value="4">4 Tahun</option><option value="5">5 Tahun</option>
-        </select>
-      </label>
+        <label class="block text-sm font-medium mt-4">Tenor
+          <select name="tenor" class="w-full mt-1 p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold">
+            <?php for ($tahun = 1; $tahun <= 5; $tahun++): ?>
+              <option value="<?= $tahun ?>" <?= (int)$tenorTahun === $tahun ? 'selected' : '' ?>><?= $tahun ?> Tahun</option>
+            <?php endfor; ?>
+          </select>
+        </label>
 
-      <button onclick="hitung()" class="w-full mt-5 bg-gold hover:bg-yellow-700 text-white font-semibold py-3 rounded-lg">Hitung Angsuran</button>
-      <div id="hasil" class="hidden mt-5 bg-[#FAF8F2] rounded-xl p-5 text-sm divide-y divide-dashed divide-gray-300"></div>
+        <button type="submit" name="hitung" class="w-full mt-5 bg-gold hover:bg-yellow-700 text-white font-semibold py-3 rounded-lg">
+          Hitung Angsuran
+        </button>
+      </form>
+
+      <?php if ($hasilTampil): ?>
+        <div class="mt-5 bg-[#FAF8F2] rounded-xl p-5 text-sm divide-y divide-dashed divide-gray-300">
+          <div class="flex justify-between py-2 text-gray-600">
+            <span>Merek Mobil</span><span><?= htmlspecialchars($mobil) ?></span>
+          </div>
+          <div class="flex justify-between py-2 text-gray-600">
+            <span>Harga Mobil</span><span>Rp <?= number_format($harga, 0, ',', '.') ?></span>
+          </div>
+          <div class="flex justify-between py-2 text-gray-600">
+            <span>DP (<?= $dpPersen ?>%)</span><span>Rp <?= number_format($dp, 0, ',', '.') ?></span>
+          </div>
+          <div class="flex justify-between py-2 text-gray-600">
+            <span>Tenor</span><span><?= $tenorTahun ?> Tahun (<?= $bulan ?> Bulan)</span>
+          </div>
+          <div class="flex justify-between py-2 text-gray-600">
+            <span>Bunga (20%)</span><span>Rp <?= number_format($bunga, 0, ',', '.') ?></span>
+          </div>
+          <div class="flex justify-between py-2 font-semibold text-dark">
+            <span>Jumlah Angsuran / Bulan</span><span>Rp <?= number_format($angsuran, 0, ',', '.') ?></span>
+          </div>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 </section>
-
-<section id="kontak" class="max-w-2xl mx-auto my-16 px-5 text-center">
-  <h2 class="font-serif text-2xl mb-2">Hubungi Kami</h2>
-  <p class="text-gray-500 text-sm mb-5">Ada pertanyaan seputar mobil atau simulasi kredit? Langsung chat via WhatsApp.</p>
-  <a id="waBtn" href="#" target="_blank" class="inline-flex items-center gap-2 bg-[#25D366] hover:opacity-90 text-white font-semibold px-7 py-3.5 rounded-full">
-    💬 Chat via WhatsApp
-  </a>
-</section>
-
-<footer class="bg-dark text-gray-300 text-center py-5 text-sm">
-  &copy; 2026 Auto Prima Mobil. All rights reserved.
-</footer>
-
-<script>
-const NOMOR_WA = "6281234567890";
-document.getElementById('waBtn').href =
-  `https://wa.me/${NOMOR_WA}?text=${encodeURIComponent("Halo, saya ingin tanya soal kredit mobil.")}`;
-
-// Isi otomatis harga mobil sesuai merek yang dipilih
-function isiHarga(){
-  const mobil = document.getElementById('mobil');
-  document.getElementById('harga').value = mobil.value;
-}
-// Jalankan sekali saat halaman dibuka, supaya harga default sudah terisi
-window.addEventListener('DOMContentLoaded', isiHarga);
-
-function rupiah(n){ return "Rp " + Math.round(n).toLocaleString("id-ID"); }
-
-function baris(label, value, tebal=false){
-  return `<div class="flex justify-between py-2 ${tebal ? 'font-semibold text-dark' : 'text-gray-600'}">
-            <span>${label}</span><span>${value}</span>
-          </div>`;
-}
-
-function hitung(){
-  const mobilSelect = document.getElementById('mobil');
-  const mobil = mobilSelect.options[mobilSelect.selectedIndex].text;
-  const harga = Number(document.getElementById('harga').value);
-  const dpPersen = Number(document.getElementById('dp').value);
-  const tenorTahun = Number(document.getElementById('tenor').value);
-
-  if(!harga){ alert("Isi harga mobil dulu!"); return; }
-
-  const bulan = tenorTahun * 12;
-  const bunga = harga * 0.20;
-  const dp = harga * dpPersen / 100;
-  const angsuran = ((harga + bunga) - dp) / bulan;
-
-  const hasil = document.getElementById('hasil');
-  hasil.classList.remove('hidden');
-  hasil.innerHTML =
-    baris("Merek Mobil", mobil) +
-    baris("Harga Mobil", rupiah(harga)) +
-    baris("DP ("+dpPersen+"%)", rupiah(dp)) +
-    baris("Tenor", tenorTahun + " Tahun (" + bulan + " Bulan)") +
-    baris("Bunga (20%)", rupiah(bunga)) +
-    baris("Jumlah Angsuran / Bulan", rupiah(angsuran), true);
-}
-</script>
-
-</body>
-</html>/
-
-
------------
-
 
 <section id="kontak" class="max-w-2xl mx-auto my-24 px-5 text-center">
   <span class="text-gold text-xs font-semibold tracking-widest uppercase">Kontak</span>
@@ -185,7 +175,7 @@ function hitung(){
   </div>
 
   <div class="flex justify-center items-center gap-5">
-    <a href="https://instagram.com/username_kamu" target="_blank" aria-label="Instagram"
+    <a href="https://www.instagram.com/vitaa.taaa_?stkn=bThrbXc5bG92OHV6" target="_blank" aria-label="Instagram"
        class="group w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 hover:border-gold hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-md">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 fill-gray-500 group-hover:fill-[#E1306C] transition-colors duration-300">
         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -200,11 +190,15 @@ function hitung(){
   </div>
 </section>
 
+<footer class="bg-dark text-gray-300 text-center py-5 text-sm">
+  &copy; 2026 Auto Prima Motor. All rights reserved.
+</footer>
 
-<section id="kontak" class="max-w-2xl mx-auto my-16 px-5 text-center">
-  <h2 class="font-serif text-2xl mb-2">Hubungi Kami</h2>
-  <p class="text-gray-500 text-sm mb-5">Ada pertanyaan seputar mobil atau simulasi kredit? Langsung chat via WhatsApp.</p>
-  <a id="waBtn" href="#" target="_blank" class="inline-flex items-center gap-2 bg-[#25D366] hover:opacity-90 text-white font-semibold px-7 py-3.5 rounded-full">
-     Chat via WhatsApp
-  </a>
-</section>
+<script>
+const NOMOR_WA = "6281234567890";
+document.getElementById('waBtn').href =
+  `https://wa.me/${NOMOR_WA}?text=${encodeURIComponent("Halo, saya ingin tanya soal kredit mobil.")}`;
+</script>
+
+</body>
+</html>
