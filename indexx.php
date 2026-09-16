@@ -21,7 +21,7 @@
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-10 py-4 border-b-2 border-goldlight bg-white">
   <div class="flex items-center gap-3">
     <img src="image/lg.png" alt="Auto Prima Mobil" class="w-11 h-11 rounded-full object-cover border border-gold" />
-    <span class="font-serif font-bold text-lg">Auto Prima Mobil</span>
+    <span class="font-serif font-bold text-lg">Auto Prima Mobill</span>
   </div>
   <nav class="space-x-6 text-sm hidden sm:block">
     <a href="#beranda" class="hover:text-gold border-b-2 border-transparent hover:border-gold pb-1">Beranda</a>
